@@ -1,6 +1,6 @@
 /******************************************************************
  *
- *   ADD YOUR NAME / SECTION NUMBER HERE
+ *   Samay Prajapati / 002
  *
  *   This java file contains the problem solutions of canFinish and
  *   numGroups methods.
@@ -82,8 +82,37 @@ class ProblemSolutions {
                                         prerequisites); 
 
         // ADD YOUR CODE HERE - ADD YOUR NAME / SECTION AT TOP OF FILE
-        return false;
+        for (int i = 0; i < numExams; i++) {
+            adj[i] = new ArrayList<>();
+        }
+        int[] inDegree = new int[numExams];
 
+        for (int[] prereq : prerequisites) {
+            adj[prereq[1]].add(prereq[0]);
+            inDegree[prereq[0]]++;
+        }
+
+        Queue<Integer> queue = new LinkedList<>();
+        for (int i = 0; i < numExams; i++) {
+            if (inDegree[i] == 0) {
+                queue.add(i);
+            }
+        }
+
+        int visitedCount = 0;
+        while (!queue.isEmpty()) {
+            int current = queue.poll();
+            visitedCount++;
+
+            for (int neighbor : adj[current]) {
+                inDegree[neighbor]--;
+                if (inDegree[neighbor] == 0) {
+                    queue.add(neighbor);
+                }
+            }
+        }
+
+        return visitedCount == numExams;
     }
 
 
@@ -192,7 +221,27 @@ class ProblemSolutions {
 
         // YOUR CODE GOES HERE - you can add helper methods, you do not need
         // to put all code in this method.
-        return -1;
+        boolean[] visited = new boolean[numNodes];
+        int groupCount = 0;
+
+        for (i = 0; i < numNodes; i++) {
+            if (!visited[i]) {
+                dfs(i, visited, graph);
+                groupCount++;
+            }
+        }
+
+        return groupCount;
+    }
+
+    private void dfs(int node, boolean[] visited, Map<Integer, List<Integer>> graph) {
+        visited[node] = true; // Mark the current node as visited
+
+        for (int neighbor : graph.getOrDefault(node, new ArrayList<>())) {
+            if (!visited[neighbor]) {
+                dfs(neighbor, visited, graph); // Visit the neighbor
+            }
+        }
     }
 
 }
